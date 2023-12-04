@@ -10,7 +10,9 @@ const app= express()
 
 app.use(express.json())
 
-const signToken = _id => jwt.sign({_id }, 'secreto')
+console.log(process.env.SECRET)
+const validateJwt = expressJwt({secret: process.env.SECRET, algorithms: ['HS256'] })
+const signToken = _id => jwt.sign({_id }, process.env.SECRET)
 
 app.post('/register', async (req, res) => {
     const { body} = req
