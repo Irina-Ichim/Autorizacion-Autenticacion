@@ -68,8 +68,18 @@ const findAndAssignerUser = async(req, res, next) => {
 const isAuthenticaded = express.Router().use(validateJwt, findAndAssignerUser)
 
 app.get('/lele', validateJwt, findAndAssignerUser, (req, res) => {
+  throw new Error('nuevo error')
   res.send(req.user)
 })
+/*Manejar el error*/
+app.use((err, req, res, next) =>{
+  console.error('Mi nuevo error', err.stack)
+  next(err)
+})
+app.use((err, req, res, next) =>{
+  res.send('Ha ocurrido un error')
+})
+
 app.listen(3000, () => {
     console.log('listening in port 3000')
 })
