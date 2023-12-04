@@ -53,15 +53,23 @@ app.post('/login', async (req, res) => {
         res.status(500).send(err.message)
     }
 })
-app.get('/lele', (req, res, next) => {
-    req.res = {id: 'lele'}
+const findAndAssignerUser = async(req, res, next) => {
+  try{
+    if(!user){
+      return res.status(401).end()
+    }
+    req.user = user
     next()
-}, (req,res, next) => {
-    console.log('lala', req.user)
-    res.send('ok')
+  } catch(e) {
+    next(e)
+  }
 }
 
-)
+const isAuthenticaded = express.Router().use(validateJwt, findAndAssignerUser)
+
+app.get('/lele', validateJwt, findAndAssignerUser, (req, res) => {
+  res.send(req.user)
+})
 app.listen(3000, () => {
     console.log('listening in port 3000')
 })
